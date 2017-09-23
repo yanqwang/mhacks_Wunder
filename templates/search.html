@@ -1,0 +1,25 @@
+<title> Search Page </title>
+<style>
+.h1 {
+	font-size: 44pt
+}
+</style>
+<h1> Search For a trip </h1>
+<form action="wunder/your-name/" method="post">
+	{% csrf_token %}
+	{{ form }}
+	<input type="submit" value="Submit" />
+</form>
+
+<!-- <form action="/wunder/search" method="post">
+	{% csrf_token %}
+<input type="submit" value="Add Itinerary">
+</input>
+
+_location }}
+	{{ form_season }}
+	{{ form_budgt }}
+	{{ form_duration }}
+	{{ form_style
+
+</form> -->

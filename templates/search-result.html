@@ -1,0 +1,13 @@
+<title> Search Result </title>
+<style>
+.h1 {
+	font-size: 44pt
+}
+</style>
+<h1> Search Result </h1>
+<body>
+	{% csrf_token %}
+	{% autoescape off %}
+    {{ html }}
+	{% endautoescape %}
+</body>
