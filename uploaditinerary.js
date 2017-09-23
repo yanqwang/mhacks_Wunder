@@ -1,4 +1,36 @@
+$(document).ready(function() {
+$("#btn").click(function(e){
+	var jsonData = {};
+	var formData = $("#myform").serializeArray();
+    
+   
+    $.each(formData, function() {
+        if (jsonData[this.name]) {
+           if (!jsonData[this.name].push) {
+               jsonData[this.name] = [jsonData[this.name]];
+           }
+           jsonData[this.name].push(this.value || '');
+       } else {
+           jsonData[this.name] = this.value || '';
+       }   
+   });
+   console.log(jsonData);
+   /*$.ajax(
+	{
+		url : "test.php",
+		type: "POST",
+		data : jsonData,
+		dataType: 'json',
 
+        success:function(json) {
+        	alert('Success!');
+        }	
+
+		
+	});*/
+    e.preventDefault();	
+	});
+});
 function load() {
 	console.log("Page load finished");
 }
@@ -104,3 +136,12 @@ function createElement (tagName, attrs) {
     //if (appendTo) appendTo.appendChild(element);
     return element;
 }
+
+//Collect html data and convert to JSON
+/*function form_to_json(selector) {
+	var ary = $(selector).serializeArray();
+	var obj={};
+	for (var a = 0; a < ary.length; ++a) {
+		obj
+	}
+}*/

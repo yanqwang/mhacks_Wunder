@@ -18,7 +18,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="uploaditinerary.js"></script>
 	<h1>Please Upload Your Wunder Memory!</h1>
-	<form method="post">
+	<form id="myform" method="post">
 		  <fieldset>
 		  <legend>Your Profile</legend>
 		  <label for="name">Name:</label>
@@ -47,7 +47,10 @@
 			  <button type="button" id="create" onclick="addItinerary()">Add Your Itinerary </button> <br><br>
 			  </div>
 		  </fieldset>
-		  
+		  <br><br>
+		  <div class="submit">
+	      <input type="submit" id="btn" name="btn" class="btn" value="Submit" />
+	      </div>		  
 		  
 		
 	</form>
