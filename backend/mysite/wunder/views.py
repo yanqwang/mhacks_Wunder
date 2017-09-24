@@ -128,10 +128,10 @@ def search_recv(request):
 	print("search result")
 	data = QueryDict(request.body)
 	print(data)
-	profile = Profile(int(data['gender'][0]), int(data['age'][0]), data['language'], int(data['active'][0]),data['region'])
-	trip_node = TripNode(data['location'],int(data['season'][0]),int(data['budget'][0]),int(data['duration'][0]),int(data['style'][0]))
-	print(int(data['gender'][0]), int(data['age'][0]), data['language'][0], int(data['active'][0]),data['region'][0])
-	print(data['location'][0],int(data['season'][0]),int(data['budget'][0]),int(data['duration'][0]),int(data['style'][0]))
+	profile = Profile(int(data['gender']), int(data['age']), data['language'], int(data['active']),data['region'])
+	trip_node = TripNode(data['location'],int(data['season']),int(data['budget']),int(data['duration']),int(data['style']))
+	print(int(data['gender']), int(data['age']), data['language'], int(data['active']),data['region'])
+	print(data['location'],int(data['season']),int(data['budget']),int(data['duration']),int(data['style']))
 	rst = db.search(profile, trip_node)
 
 	html = ""
@@ -192,3 +192,57 @@ def search_recv(request):
 		html += trip
 	print("test html"+html)
 	return render(request, 'search-result.html', {'html': html})
+
+# def search_recv(request):
+# 	print("search result")
+# 	data = QueryDict(request.body)
+# 	print(data)
+# 	profile = Profile(int(data['gender'][0]), int(data['age'][0]), data['language'], int(data['active'][0]),data['region'])
+# 	trip_node = TripNode(data['location'],int(data['season'][0]),int(data['budget'][0]),int(data['duration'][0]),int(data['style'][0]))
+# 	print(int(data['gender'][0]), int(data['age'][0]), data['language'][0], int(data['active'][0]),data['region'][0])
+# 	print(data['location'][0],int(data['season'][0]),int(data['budget'][0]),int(data['duration'][0]),int(data['style'][0]))
+# 	rst = db.search(profile, trip_node)
+
+# 	html = ""
+# 	print(len(db.Data))
+# 	print(len(rst))
+# 	row_head = "<div class = 'row'>"
+# 	row_end = "</div>"
+# 	col_12_head = "<div class = 'col s12'>"
+# 	col_8_head = "<div class = 'col s8'>"
+# 	col_4_head = "<div class = 'col s4'>"
+# 	col_end = "</div>"
+# 	gray_head = "<div class='text'>"
+# 	gray_end = "</div>"
+# 	for i in range(len(rst)):
+# 		html += " <h2> Attempted Trip "+ str(i) + "</h2>"
+# 		trip = ""
+		
+# 		for j in range(len(rst[i].itinerary.tripnodes)):
+# 			trip += "<h3> Step " + str(j) + "</h3>"
+# 			trip += gray_head + row_head
+# 			trip += col_12_head
+# 			content = "<p class='info'> Location: "+ rst[i].itinerary.tripnodes[j].location + "</p>" \
+# 					+ "<p class='info'> Season: "+ str(rst[i].itinerary.tripnodes[j].season) + "</p>" \
+# 					+ "<p class='info'> Duration: "+ str(rst[i].itinerary.tripnodes[j].duration) + "</p>" \
+# 					+ "<p class='info'> budget: "+ budget_dict[rst[i].itinerary.tripnodes[j].budget] + "</p>" \
+# 					+ "<p class='info'> style: "+ style_dict[rst[i].itinerary.tripnodes[j].style] + "</p>"
+# 			trip += col_4_head + content + col_end
+# 			trip += col_8_head 
+# 			trip += row_head
+# 			img_left = "<img src='images/IMG01.JPG'>"
+# 			trip += col_4_head + img_left + col_end
+# 			img_right = "<img src='images/IMG02.JPG'>"
+# 			trip += col_4_head + img_right + col_end
+# 			trip += row_end
+# 			trip += row_head
+# 			text = "Interdum et malesuada fames ac ante ipsum primis in faucibus. Aliquam vulputate ullamcorper magna nec porta. Aenean sed elit felis. Duis efficitur rhoncus imperdiet. Morbi in porta nulla. Suspendisse molestie ante leo, sit amet sodales urna porta euismod. Phasellus nibh ligula, volutpat sit amet sollicitudin ut, lobortis in dui. Praesent ut risus tristique, facilisis nibh ac, eleifend lacus. Nam a est ac turpis fermentum ornare."
+# 			trip += col_8_head + text + col_end
+# 			trip += row_end
+# 			trip += col_end #col_8_end
+# 			trip += col_end #col_12_end
+# 			trip += row_end + gray_end
+			
+# 		html += trip
+# 	print("test html"+html)
+# 	return render(request, 'search-result.html', {'html': html})

@@ -13,10 +13,12 @@ class Database:
 	def __init__(self):
 		self.Data = list()
 		self.db_cursor = sq3.connect("db.sqlite3", check_same_thread=False)
-		if (self.profile_is_empty()):
-			self.create_profile_table()
-		if (self.itinerary_is_empty()):
-			self.create_itinerary_table()
+		self.clear_all_table()
+		# if (self.profile_is_empty()):
+		# 	self.create_profile_table()
+		# if (self.itinerary_is_empty()):
+		# 	self.create_itinerary_table()
+		# self.load_to_memory()
 
 	def __del__(self):
 		self.db_cursor.close()
@@ -77,6 +79,15 @@ class Database:
 								%((tail_id_itinerary+i+1), (tail_id_profile+1), (i+1), \
 									temp.location, temp.season, temp.duration, temp.budget, temp.style))
 		self.db_cursor.commit()
+		self.Data = []
+		self.load_to_memory()
+
+	def clear_all_table(self):
+		self.db_cursor.execute("DROP TABLE PROFILE_TABLE")
+		self.db_cursor.execute("DROP TABLE ITINERARY_TABLE")
+		self.create_profile_table()
+		self.create_itinerary_table()
+		self.db_cursor.commit()
 
 	def load_to_memory(self):
 		profile_list = self.db_cursor.execute("""SELECT IID, GENDER, AGE, ACTIVE 
@@ -87,21 +98,25 @@ class Database:
 													FROM ITINERARY_TABLE
 													ORDER BY IID;""").fetchall()
 		profile_list_len = len(profile_list)
+		print("profile_list : ", profile_list_len)
 		ptr = 0
 		for i in range(profile_list_len):
 			profile = Profile(profile_list[i][1], profile_list[i][2], 'english', profile_list[i][3], 'us')
 			same_iid_list = list()
-			while (itinerary_list[ptr] == profile_list[i][0]):
+			print("PTR : ", ptr)
+			while (ptr<len(itinerary_list) and itinerary_list[ptr][1] == profile_list[i][0]):
 				same_iid_list.append(itinerary_list[ptr])
 				ptr += 1
+				print("PTR : ", ptr)
 			same_iid_list.sort(key=lambda x: x[2])
 			itinerary = Itinerary('home')
+			print("same iid list : ", len(same_iid_list))
 			for j in range(len(same_iid_list)):
+				print(same_iid_list[j][3], same_iid_list[j][4], same_iid_list[j][5])
 				tripnode = TripNode(loc=same_iid_list[j][3], season=same_iid_list[j][4], \
 				 budget=same_iid_list[j][6], dur=same_iid_list[j][5], sty=same_iid_list[j][7])
 				itinerary.add(tripnode)
 			self.add(profile, itinerary)
-				
 
 
 
