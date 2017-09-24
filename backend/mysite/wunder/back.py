@@ -76,7 +76,7 @@ class TripNode:
 	# season: int 1-12
 	# budget: int $,$$,$$$
 	# duration: int in days
-	# style: text, int "culture","outdoor","shopping","relaxing"
+	# style: int, int "culture","outdoor","shopping","relaxing"
 	# optional
 	# description: text optional description of trip node
 	# image: 2D array optional image of trip node

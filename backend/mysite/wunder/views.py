@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.http import QueryDict
 from .forms import SearchForm
+from .forms import ProfileForm
+from .forms import UploadForm
 
 from .back import Profile
 from .back import TripNode
@@ -67,12 +69,33 @@ def get_search(request):
 	return render(request, 'search.html', {'form': form})
 
 def get_upload(request):
-	return render(request, 'upload.html')
+	print("get upload")
+	input_str = "<input type='submit' value='Submit' />"
+	separate_str = "<p>==============================================</p>"
+	if request.method == 'POST':
+		form = ProfileForm(request.POST).as_p()
+		it_form = UploadForm().as_p()
+		print(request.body)
+		data = QueryDict(request.body)
+		if (int(data['num'][0])==1):
+			return render(request, 'upload.html', {'profile_form': form, 'it_form_1': it_form, 'input_str': input_str})
+		elif (int(data['num'][0])==2):
+			return render(request, 'upload.html', {'profile_form': form, 'it_form_1': it_form, 'separate_1': separate_str, \
+														'it_form_2': it_form, 'input_str': input_str})
+		else:
+			return render(request, 'upload.html', {'profile_form': form, 'it_form_1': it_form, 'separate_1': separate_str, \
+														'it_form_2': it_form, 'separate_2': separate_str, \
+														'it_form_3': it_form, 'input_str': input_str})
+	else:
+		form = ProfileForm().as_p()
+		return render(request, 'upload.html', {'profile_form': form})
 
 def upload_recv(request):
 	print("enter upload recev")
-	print(request.body)
-	return render(request, 'search.html')
+	# print(request.body)
+	data = QueryDict(request.body)
+	print(data)
+	return HttpResponse("hello world")
 
 def search_recv(request):
 	print("search result")
