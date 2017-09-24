@@ -11,19 +11,20 @@
 			background-blend-mode: lighten;
 			margin-left: 5%;
 		}
+		.text {
+			background-color: rgba(233,233,233,0.5);
+		}
 	</style>
 </head>
 <body>
 	<h1> Upload Your Wunder Memory!</h1>
-	<form id="upload-form" method="post" action="upload/">
+	<form class='text' id="upload-form" method="post" action="upload/">
 		{% csrf_token %}
 		{{ profile_form }}
 		<input type="submit" value="Submit" />
 	</form>
-	
-	<p>==============================================</p>
 
-	<form id="upload-form" method="post" action="wunder/it/">
+	<form class='text' id="upload-form" method="post" action="wunder/it/">
 		{% csrf_token %}
 		{{ it_form_1 }}
 		

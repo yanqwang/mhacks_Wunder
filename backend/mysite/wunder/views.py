@@ -10,38 +10,16 @@ from .back import Profile
 from .back import TripNode
 from .back import Itinerary
 from .back import Database
-
+import copy
 import os
 
 # Create your views here.
 budget_dict = {1: '$', 2: '$$', 3:'$$$'}
 style_dict = {1: 'culture', 2: 'outdoor', 3: 'shopping', 4: 'relaxing'}
 
+profile_temp = None
+
 db = Database()
-# initialize database data here
-# node1 = TripNode("Shanghai",1,'$',3,"relaxing")
-# node2 = TripNode("Beijing", 1, '$$',2,"shopping")
-node1 = TripNode("Shanghai",1,1,3, 4)
-node2 = TripNode("Beijing", 1, 2,2,3)
-it1 = Itinerary("Home")
-it1.add(node1)
-it1.add(node2)
-it1.print_nodes()
-
-# node3 = TripNode("Shanghai",12,'$',2,"culture")
-# node4 = TripNode("Hefei", 2, '$', 4,"outdoor")
-node3 = TripNode("Shanghai",12,1,2,1)
-node4 = TripNode("Hefei", 2, 1, 4,2)
-it2 = Itinerary("Jiaxin")
-it2.add(node3)
-it2.add(node4)
-it2.print_nodes()
-
-# p = Profile('male', 15,'English','high','North America')
-p = Profile(1, 15,'English',3,'North America')
-db.add(p,it1)
-db.add(p,it2)
-
 
 def index(request):
     return HttpResponse("Hello world")
@@ -95,12 +73,15 @@ def get_search(request):
 def get_upload(request):
 	print("get upload")
 	input_str = "<input type='submit' value='Submit' />"
-	separate_str = "<p>==============================================</p>"
+	separate_str = ""
 	if request.method == 'POST':
 		form = ProfileForm(request.POST).as_p()
 		it_form = UploadForm().as_p()
 		print(request.body)
 		data = QueryDict(request.body)
+		global profile_temp
+		profile_temp = data
+		print(profile_temp == None)
 		if (int(data['num'][0])==1):
 			return render(request, 'upload.html', {'profile_form': form, 'it_form_1': it_form, 'input_str': input_str})
 		elif (int(data['num'][0])==2):
@@ -117,9 +98,31 @@ def get_upload(request):
 def upload_recv(request):
 	print("enter upload recev")
 	# print(request.body)
-	data = QueryDict(request.body)
+	data = QueryDict(request.body).copy()
 	print(data)
-	return HttpResponse("hello world")
+	print(profile_temp == None)
+	gender = int(profile_temp['gender'][0])
+	age = int(profile_temp['age'][0])
+	language = profile_temp['language'] 
+	active = int(profile_temp['active'][0])
+	region = profile_temp['region']
+	p = Profile(gender, age, language, active, region)
+	
+	location_list = data.pop('location')
+	season_list = data.pop('season')
+	budget_list = data.pop('budget')
+	duration_list = data.pop('duration')
+	style_list = data.pop('style')
+	itinerary_length = len(location_list)
+	print(location_list)
+	it = Itinerary('Home')
+	for i in range(itinerary_length):
+		trip_node = TripNode(location_list[i],int(season_list[i]),int(budget_list[i]),int(budget_list[i]),int(style_list[i]))
+		it.add(trip_node)
+	
+	db.add_to_table(p, it)
+	ans = "Thank you for your sharing! We have uploaded your itinerary to our database. Feel free to visit others' itinerary for your next trip."
+	return render(request, 'upload-result.html', {'upload_recv': ans})
 
 def search_recv(request):
 	print("search result")
