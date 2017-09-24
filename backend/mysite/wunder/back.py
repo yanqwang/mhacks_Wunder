@@ -12,7 +12,7 @@ class Database:
 
 	def __init__(self):
 		self.Data = list()
-		self.db_cursor = sq3.connect("db.sqlite3")
+		self.db_cursor = sq3.connect("db.sqlite3", check_same_thread=False)
 		if (self.profile_is_empty()):
 			self.create_profile_table()
 		if (self.itinerary_is_empty()):
