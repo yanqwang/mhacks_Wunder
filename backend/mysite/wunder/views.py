@@ -11,6 +11,8 @@ from .back import TripNode
 from .back import Itinerary
 from .back import Database
 
+import os
+
 # Create your views here.
 budget_dict = {1: '$', 2: '$$', 3:'$$$'}
 style_dict = {1: 'culture', 2: 'outdoor', 3: 'shopping', 4: 'relaxing'}
@@ -50,6 +52,28 @@ def search(request):
 
 def upload(request):
 	return HttpResponse("Upload page")
+
+def get_css(request):
+	path = request.path
+	name = ""
+	if (path.find("style.css")!=-1):
+		name = "style.css"
+	else:
+		name = "materialize.css"
+	with open('css/'+name, 'rb') as f:
+		css_data = f.read()
+	return HttpResponse(css_data, "mimetype='text/css'")
+
+def get_image(request):
+	# print(request.path)
+	# os.system("pwd")
+	# os.system("ls")
+	path = request.path
+	name = path[path.find("IMG"):]
+	image_data = None
+	with open('images/'+name, 'rb') as f:
+		image_data = f.read()
+	return HttpResponse(image_data, "mimetype='image/jpg'")
 
 def get_search(request):
 	if request.method == 'POST':
@@ -107,7 +131,7 @@ def search_recv(request):
 	print(data['location'][0],int(data['season'][0]),int(data['budget'][0]),int(data['duration'][0]),int(data['style'][0]))
 	rst = db.search(profile, trip_node)
 
-	html = "<p>666</p>"
+	html = ""
 	print(len(db.Data))
 	print(len(rst))
 	row_head = "<div class = 'row'>"
@@ -116,25 +140,27 @@ def search_recv(request):
 	col_8_head = "<div class = 'col s8'>"
 	col_4_head = "<div class = 'col s4'>"
 	col_end = "</div>"
+	gray_head = "<div class='text'>"
+	gray_end = "</div>"
 	for i in range(len(rst)):
 		html += " <h2> Attempted Trip "+ str(i) + "</h2>"
 		trip = ""
 		
 		for j in range(len(rst[i].itinerary.tripnodes)):
-			trip += "<h2> Step " + str(j) + "</h2>"
-			trip += row_head
+			trip += "<h3> Step " + str(j) + "</h3>"
+			trip += gray_head + row_head
 			trip += col_12_head
-			content = "<p> Location: "+ rst[0].itinerary.tripnodes[i].location + "</p>"
-					+ "<p> Season: "+ str(rst[0].itinerary.tripnodes[i].season) + "</p>"
-					+ "<p> Duration: "+ str(rst[0].itinerary.tripnodes[i].duration) + "</p>"
-					+ "<p> budget: "+ budget_dict[rst[0].itinerary.tripnodes[i].budget] + "</p>"
-					+ "<p> style: "+ style_dict[rst[0].itinerary.tripnodes[i].style] + "</p>"
+			content = "<p class='info'> Location: "+ rst[i].itinerary.tripnodes[j].location + "</p>" \
+					+ "<p class='info'> Season: "+ str(rst[i].itinerary.tripnodes[j].season) + "</p>" \
+					+ "<p class='info'> Duration: "+ str(rst[i].itinerary.tripnodes[j].duration) + "</p>" \
+					+ "<p class='info'> budget: "+ budget_dict[rst[i].itinerary.tripnodes[j].budget] + "</p>" \
+					+ "<p class='info'> style: "+ style_dict[rst[i].itinerary.tripnodes[j].style] + "</p>"
 			trip += col_4_head + content + col_end
 			trip += col_8_head 
 			trip += row_head
-			img_left = "<img haha>"
+			img_left = "<img src='images/IMG01.JPG'>"
 			trip += col_4_head + img_left + col_end
-			img_right = "<img hahahaha>"
+			img_right = "<img src='images/IMG02.JPG'>"
 			trip += col_4_head + img_right + col_end
 			trip += row_end
 			trip += row_head
@@ -143,18 +169,8 @@ def search_recv(request):
 			trip += row_end
 			trip += col_end #col_8_end
 			trip += col_end #col_12_end
-			trip += row_end 
+			trip += row_end + gray_end
 			
 		html += trip
 	print("test html"+html)
 	return render(request, 'search-result.html', {'html': html})
-
-
-
-
-
-
-
-
-
-

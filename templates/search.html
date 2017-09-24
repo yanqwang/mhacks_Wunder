@@ -3,14 +3,28 @@
 .h1 {
 	font-size: 44pt
 }
+body {
+	background: url("images/IMG00.JPG") no-repeat;
+	background-size: cover;
+	background-color: rgba(0,0,0,0.5);
+	background-blend-mode: lighten;
+	margin-left: 5%;
+}
+
+.text {
+	background-color: rgba(233,233,233,0.5);
+}
 </style>
+<body>
 <h1> Search For a trip </h1>
 <form action="wunder/your-name/" method="post">
 	{% csrf_token %}
+	<div class="text">
 	{{ form }}
+	</div>
 	<input type="submit" value="Submit" />
 </form>
-
+</body>
 <!-- <form action="/wunder/search" method="post">
 	{% csrf_token %}
 <input type="submit" value="Add Itinerary">
