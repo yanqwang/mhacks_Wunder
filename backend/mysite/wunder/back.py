@@ -1,3 +1,7 @@
+import sqlite3 as sq3 
+
+
+
 class DataEntry:
 	def __init__(self, profile, itinerary, match=0):
 		self.profile = profile
@@ -8,6 +12,99 @@ class Database:
 
 	def __init__(self):
 		self.Data = list()
+		self.db_cursor = sq3.connect("db.sqlite3")
+		if (self.profile_is_empty()):
+			self.create_profile_table()
+		if (self.itinerary_is_empty()):
+			self.create_itinerary_table()
+
+	def __del__(self):
+		self.db_cursor.close()
+
+
+	def profile_is_empty(self):
+		profile_table_exists = len(self.db_cursor.execute("""SELECT name
+											FROM sqlite_master
+											WHERE type='table' AND name='PROFILE_TABLE'; """).fetchall()) == 0
+
+		return profile_table_exists
+
+	def itinerary_is_empty(self):
+		itinerary_table_exists = len(self.db_cursor.execute("""SELECT name
+											FROM sqlite_master
+											WHERE type='table' AND name='ITINERARY_TABLE'; """).fetchall()) == 0
+
+		return itinerary_table_exists
+
+	def create_profile_table(self):
+		self.db_cursor.execute("""
+							CREATE TABLE PROFILE_TABLE
+							(IID INT PRIMARY KEY NOT NULL,
+							GENDER INT NOT NULL,
+							AGE INT NOT NULL,
+							ACTIVE INT NOT NULL
+							);
+						""")
+
+	def create_itinerary_table(self):
+		self.db_cursor.execute("""
+							CREATE TABLE ITINERARY_TABLE
+							(ID INT PRIMARY KEY NOT NULL,
+							IID INT NOT NULL,
+							NID INT NOT NULL,
+							LOCATION TEXT NOT NULL,
+							SEASON INT NOT NULL,
+							DURATION INT NOT NULL,
+							BUDGET INT NOT NULL,
+							STYLE INT NOT NULL
+							);
+						""")
+
+	def add_to_table(self, profile, itinerary):
+		tail_id_profile = len(self.db_cursor.execute("SELECT IID FROM PROFILE_TABLE").fetchall())
+		self.db_cursor.execute("""
+							INSERT INTO PROFILE_TABLE (IID, GENDER, AGE, ACTIVE)
+							VALUES (%d, %d, %d, %d);"""
+							%((tail_id_profile+1), profile.gender, profile.age, profile.active))
+		print(tail_id_profile)
+		tail_id_itinerary = len(self.db_cursor.execute("SELECT ID FROM ITINERARY_TABLE").fetchall())
+		print(tail_id_itinerary)
+		for i in range(len(itinerary.tripnodes)):
+			temp = itinerary.tripnodes[i]
+			self.db_cursor.execute("""
+								INSERT INTO ITINERARY_TABLE (ID, IID, NID, LOCATION, SEASON, DURATION, BUDGET, STYLE)
+								VALUES (%d, %d, %d, '%s', %d, %d, %d, %d);"""
+								%((tail_id_itinerary+i+1), (tail_id_profile+1), (i+1), \
+									temp.location, temp.season, temp.duration, temp.budget, temp.style))
+		self.db_cursor.commit()
+
+	def load_to_memory(self):
+		profile_list = self.db_cursor.execute("""SELECT IID, GENDER, AGE, ACTIVE 
+													FROM PROFILE_TABLE
+													ORDER BY IID;""").fetchall()
+
+		itinerary_list = self.db_cursor.execute("""SELECT ID, IID, NID, LOCATION, SEASON, DURATION, BUDGET, STYLE
+													FROM ITINERARY_TABLE
+													ORDER BY IID;""").fetchall()
+		profile_list_len = len(profile_list)
+		ptr = 0
+		for i in range(profile_list_len):
+			profile = Profile(profile_list[i][1], profile_list[i][2], 'english', profile_list[i][3], 'us')
+			same_iid_list = list()
+			while (itinerary_list[ptr] == profile_list[i][0]):
+				same_iid_list.append(itinerary_list[ptr])
+				ptr += 1
+			same_iid_list.sort(key=lambda x: x[2])
+			itinerary = Itinerary('home')
+			for j in range(len(same_iid_list)):
+				tripnode = TripNode(loc=same_iid_list[j][3], season=same_iid_list[j][4], \
+				 budget=same_iid_list[j][6], dur=same_iid_list[j][5], sty=same_iid_list[j][7])
+				itinerary.add(tripnode)
+			self.add(profile, itinerary)
+				
+
+
+
 
 	def add(self, profile, itinerary):
 		self.Data.append(DataEntry(profile, itinerary))
@@ -138,8 +235,8 @@ class Itinerary:
 
 if __name__ == "__main__":
 	db = Database()
-	node1 = TripNode("Shanghai",1,'$',3,"relaxing")
-	node2 = TripNode("Beijing", 1, '$$',2,"shopping")
+	node1 = TripNode("Shanghai",1,1,3,1)
+	node2 = TripNode("Beijing", 1,2,2,3)
 	it1 = Itinerary("Home")
 	it1.add(node1)
 	it1.add(node2)
@@ -147,8 +244,8 @@ if __name__ == "__main__":
 
 	print('')
 
-	node3 = TripNode("Shanghai",12,'$',2,"culture")
-	node4 = TripNode("Hefei", 2, '$', 4,"outdoor")
+	node3 = TripNode("Shanghai",12,1,2,3)
+	node4 = TripNode("Hefei", 2, 2, 4,1)
 	it2 = Itinerary("Jiaxin")
 	it2.add(node3)
 	it2.add(node4)
@@ -168,9 +265,15 @@ if __name__ == "__main__":
 	print(it2.match(tp1))
 	print(it2.match(tp2))
 
-	p = Profile('male', 15,'English','high','North America')
-	db.add(p,it1)
-	db.add(p,it2)
+	# p = Profile('male', 15,'English','high','North America')
+	# db.add(p,it1)
+	# db.add(p,it2)
 
-	p2 = Profile('female', 15,'English','low','North America')
-	db.search(p2, node3)
+	# p2 = Profile('female', 15,'English','low','North America')
+	# db.search(p2, node3)
+
+	p1 = Profile(1, 15, 'english', 2, 'us')
+	db.add_to_table(p1, it1)
+	db.add_to_table(p1, it2)
+
+
