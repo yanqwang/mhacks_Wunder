@@ -142,6 +142,21 @@ def search_recv(request):
 	col_end = "</div>"
 	gray_head = "<div class='text'>"
 	gray_end = "</div>"
+
+	#default location <==> images
+	location_image = {'Niagara Falls': ["<img src='images/IMG0101L.JPG'>",
+										"<img src='images/IMG0101R.JPG'>"],
+					'Winery': ["<img src='images/IMG0102L.JPG'>",
+								"<img src='images/IMG0102R.JPG'>"],
+					'Aquarium': ["<img src='images/IMG0201L.JPG'>",
+										"<img src='images/IMG0201R.JPG'>"],
+					'Grand Rapids Public Museum': ["<img src='images/IMG0301L.JPG'>",
+										"<img src='images/IMG0301R.JPG'>"],
+					'John Ball Zoo': ["<img src='images/IMG0302L.JPG'>",
+										"<img src='images/IMG0302R.JPG'>"],
+					'Grattan Raceway': ["<img src='images/IMG0303L.JPG'>",
+										"<img src='images/IMG0303R.JPG'>"],}
+
 	for i in range(len(rst)):
 		html += " <h2> Attempted Trip "+ str(i) + "</h2>"
 		trip = ""
@@ -158,9 +173,9 @@ def search_recv(request):
 			trip += col_4_head + content + col_end
 			trip += col_8_head 
 			trip += row_head
-			img_left = "<img src='images/IMG01.JPG'>"
+			img_left = location_image[rst[i].itinerary.tripnodes[j].location][0]
 			trip += col_4_head + img_left + col_end
-			img_right = "<img src='images/IMG02.JPG'>"
+			img_right = location_image[rst[i].itinerary.tripnodes[j].location][1]
 			trip += col_4_head + img_right + col_end
 			trip += row_end
 			trip += row_head
