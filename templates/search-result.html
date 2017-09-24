@@ -1,0 +1,22 @@
+<title> Search Result </title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href="materialize.css">
+<style type="text/css">
+	.h1 {
+		font-size: 44pt
+	}
+	.row {
+		float : center;
+		width: 80%;
+		margin-top: 5%;
+	}
+
+</style>
+
+<h1> Search Result </h1>
+<body>
+	{% csrf_token %}
+	{% autoescape off %}
+    {{ html }}
+	{% endautoescape %}
+</body>

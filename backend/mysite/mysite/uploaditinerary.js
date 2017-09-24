@@ -1,5 +1,4 @@
 $(document).ready(function() {
-
 $("#btn").click(function(e){
 	var jsonData = {};
 	var formData = $("#myform").serializeArray();
@@ -18,7 +17,7 @@ $("#btn").click(function(e){
    console.log(jsonData);
    $.ajax(
 	{
-		url: '/wunder/upload-rst',
+		url: '/upload/result',
 		type: "POST",
 		data : jsonData,
 		dataType: 'json',
@@ -31,10 +30,8 @@ $("#btn").click(function(e){
 	});
     e.preventDefault();
     console.log("end of button");
-
 	});
 });
-
 function load() {
 	console.log("Page load finished");
 }
