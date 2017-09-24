@@ -1,34 +1,34 @@
 $(document).ready(function() {
-$("#btn").click(function(e){
-	var jsonData = {};
-	var formData = $("#myform").serializeArray();
+	$("#btn").click(function(e){
+		var jsonData = {};
+		var formData = $("#myform").serializeArray();
     
    
-    $.each(formData, function() {
-        if (jsonData[this.name]) {
-           if (!jsonData[this.name].push) {
-               jsonData[this.name] = [jsonData[this.name]];
-           }
-           jsonData[this.name].push(this.value || '');
-       } else {
-           jsonData[this.name] = this.value || '';
-       }   
-   });
-   console.log(jsonData);
-   /*$.ajax(
-	{
-		url : "test.php",
-		type: "POST",
-		data : jsonData,
-		dataType: 'json',
+	    $.each(formData, function() {
+	        if (jsonData[this.name]) {
+	           if (!jsonData[this.name].push) {
+	               jsonData[this.name] = [jsonData[this.name]];
+	           }
+	           jsonData[this.name].push(this.value || '');
+	       } else {
+	           jsonData[this.name] = this.value || '';
+	       }   
+	    });
+	   console.log(jsonData);
+	   $.ajax(
+		{
+			url : "test.php",
+			type: "POST",
+			data : jsonData,
+			dataType: 'json',
 
-        success:function(json) {
-        	alert('Success!');
-        }	
+	        success:function(jsonData) {
+	        	alert('Success!');
+	        }	
 
-		
-	});*/
-    e.preventDefault();	
+			
+		});
+	    e.preventDefault();	
 	});
 });
 function load() {
